@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:iig_interview/module/api/users.dart';
 import 'package:iig_interview/module/models/current_user.dart';
 import 'package:iig_interview/module/providers/current_user.dart';
-import 'package:provider/src/provider.dart';
+import 'package:provider/provider.dart';
 import 'package:vrouter/vrouter.dart';
 
 class LoginPage extends StatefulWidget {
@@ -16,11 +16,12 @@ class _LoginPageState extends State<LoginPage> {
   final _loginKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passController = TextEditingController();
-  UserStore userapi = User();
+  final UserStore userapi = User();
 
   @override
   Widget build(BuildContext context) {
-    CurrentUserProvince province = context.watch<CurrentUserProvince>();
+    CurrentUserProvince provider =
+        Provider.of<CurrentUserProvince>(context, listen: false);
     return Scaffold(
       body: Center(
           child: SizedBox(
@@ -62,12 +63,24 @@ class _LoginPageState extends State<LoginPage> {
                               border: OutlineInputBorder(),
                               hintText: "Enter your Password"),
                           validator: (value) {
+                            RegExp regEx = RegExp(r"(?=.*[a-z])(?=.*[A-Z])\w+");
+                            RegExp regEx1 = RegExp(r"(?=.*?[!@#\$&*~])\w+");
                             if (value!.length < 6) {
                               return "password Must be at least 6 characters";
+                            } else if (!regEx.hasMatch(value)) {
+                              return "password Must lower and upper";
+                            } else if (regEx.hasMatch(value)) {
+                              return "password can't use ! @ # \$ & * ~ .";
                             }
                           },
                         ),
                       ),
+                      Center(
+                          child: TextButton(
+                              onPressed: () {
+                                context.vRouter.toNamed('register');
+                              },
+                              child: const Text("สมัครสมาชิก"))),
                       SizedBox(
                         width: double.infinity,
                         child: TextButton(
@@ -116,8 +129,8 @@ class _LoginPageState extends State<LoginPage> {
                                     var user = CurrentUser.fromJson(
                                         userData.message['currentUser']);
                                     var token = userData.message['token'];
-                                    await province.setUser(user, token);
-                                    print(province.token);
+                                    await provider.setUser(user, token);
+                                    //print(provider.getToken());
                                     context.vRouter.toNamed('home');
                                   }
                                 }
