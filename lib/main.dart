@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:iig_interview/module/providers/current_user.dart';
+import 'package:iig_interview/page/compoment/profile.dart';
+import 'package:iig_interview/page/home.dart';
 import 'package:iig_interview/page/register.dart';
 import 'package:provider/provider.dart';
-import 'package:iig_interview/page/home.dart';
+import 'package:iig_interview/page/compoment/home.dart';
 import 'package:iig_interview/page/login.dart';
 import 'package:vrouter/vrouter.dart';
 
@@ -65,8 +67,28 @@ class _RouterState extends State<Router> {
                 print("refresh token");
               }*/
             },
+            beforeUpdate: (vRedirector) async {
+              var token = await userProvider.getToken();
+              if (token.isEmpty) {
+                return vRedirector.to("/login");
+              }
+            },
             stackedRoutes: [
-              VWidget(path: "/home", widget: const HomePage(), name: 'home')
+              VNester(
+                  path: "",
+                  widgetBuilder: (child) => HomePage(
+                        compoment: child,
+                      ),
+                  nestedRoutes: [
+                    VWidget(
+                        path: "home",
+                        widget: const HomeCompoment(),
+                        name: 'home'),
+                    VWidget(
+                        path: "profile",
+                        widget: const ProfileCompoment(),
+                        name: 'profile')
+                  ])
             ]),
         VRouteRedirector(path: '', redirectTo: '/login'),
         VRouteRedirector(path: '*', redirectTo: '/login'),

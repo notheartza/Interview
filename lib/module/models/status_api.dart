@@ -7,7 +7,7 @@ class StatusAPI {
   StatusAPI(this.status, this.message);
 
   int status;
-  Map<String, dynamic> message;
+  String message;
 
   factory StatusAPI.fromJson(Map<String, dynamic> json) =>
       _$StatusAPIFromJson(json);

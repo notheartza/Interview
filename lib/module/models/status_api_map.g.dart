@@ -1,19 +1,20 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'status_api.dart';
+part of 'status_api_map.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-StatusAPI _$StatusAPIFromJson(Map<String, dynamic> json) {
-  return StatusAPI(
+StatusAPIMap _$StatusAPIMapFromJson(Map<String, dynamic> json) {
+  return StatusAPIMap(
     json['status'] as int,
-    json['message'] as String,
+    json['message'] as Map<String, dynamic>,
   );
 }
 
-Map<String, dynamic> _$StatusAPIToJson(StatusAPI instance) => <String, dynamic>{
+Map<String, dynamic> _$StatusAPIMapToJson(StatusAPIMap instance) =>
+    <String, dynamic>{
       'status': instance.status,
       'message': instance.message,
     };

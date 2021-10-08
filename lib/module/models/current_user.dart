@@ -9,20 +9,26 @@ part 'current_user.g.dart';
   checked: true,
 )
 class CurrentUser {
-  CurrentUser(this.id, this.emailVerified, this.username, this.firstName,
-      this.lastName, this.email, this.createdAt, this.updatedAt, this.token);
+  CurrentUser(
+    this.id,
+    this.username,
+    this.firstName,
+    this.lastName,
+    this.email,
+    this.createdAt,
+    this.updatedAt,
+    this.image,
+  );
 
   @JsonKey(name: '_id')
   String id;
-  bool? emailVerified;
   String? username;
   String? firstName;
   String? lastName;
-  String? userType;
   String? email;
   DateTime? createdAt;
   DateTime? updatedAt;
-  Object? token;
+  String? image;
 
   factory CurrentUser.fromJson(Map<String, dynamic> json) =>
       _$CurrentUserFromJson(json);

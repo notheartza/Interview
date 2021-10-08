@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:iig_interview/module/api/users.dart';
 import 'package:iig_interview/module/models/current_user.dart';
@@ -17,6 +19,7 @@ class _LoginPageState extends State<LoginPage> {
   final _emailController = TextEditingController();
   final _passController = TextEditingController();
   final UserStore userapi = User();
+  var _passwordVisible = false;
 
   @override
   Widget build(BuildContext context) {
@@ -43,12 +46,12 @@ class _LoginPageState extends State<LoginPage> {
                         child: TextFormField(
                             controller: _emailController,
                             decoration: const InputDecoration(
-                                labelText: "Email",
+                                labelText: "username",
                                 border: OutlineInputBorder(),
-                                hintText: "Enter your Email"),
+                                hintText: "Enter your username"),
                             validator: (value) {
                               if (value!.isEmpty) {
-                                return 'Please enter a valid email address';
+                                return 'Please enter a your username';
                               }
                               return null;
                             }),
@@ -56,21 +59,36 @@ class _LoginPageState extends State<LoginPage> {
                       Padding(
                         padding: const EdgeInsets.only(bottom: 10),
                         child: TextFormField(
-                          obscureText: true,
+                          obscureText: !_passwordVisible,
                           controller: _passController,
-                          decoration: const InputDecoration(
+                          decoration: InputDecoration(
                               labelText: "Password",
-                              border: OutlineInputBorder(),
-                              hintText: "Enter your Password"),
+                              border: const OutlineInputBorder(),
+                              hintText: "Enter your Password",
+                              suffixIcon: IconButton(
+                                highlightColor: Colors.transparent,
+                                splashColor: Colors.transparent,
+                                hoverColor: Colors.transparent,
+                                onPressed: () {
+                                  setState(() {
+                                    _passwordVisible = !_passwordVisible;
+                                  });
+                                },
+                                icon: Icon((_passwordVisible)
+                                    ? Icons.visibility
+                                    : Icons.visibility_off),
+                                color: Theme.of(context).primaryColorDark,
+                              )),
                           validator: (value) {
-                            RegExp regEx = RegExp(r"(?=.*[a-z])(?=.*[A-Z])\w+");
-                            RegExp regEx1 = RegExp(r"(?=.*?[!@#\$&*~])\w+");
+                            RegExp regEx =
+                                RegExp(r"(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])\w+");
+                            RegExp regEx1 = RegExp(r"(?=.*[~!?@#$%^&*-])\w+");
                             if (value!.length < 6) {
                               return "password Must be at least 6 characters";
                             } else if (!regEx.hasMatch(value)) {
-                              return "password Must lower and upper";
-                            } else if (regEx.hasMatch(value)) {
-                              return "password can't use ! @ # \$ & * ~ .";
+                              return "password Must 1 digit 1 lowercase and 1 uppercase";
+                            } else if (regEx1.hasMatch(value)) {
+                              return "password can't use ~ ! ? @ # \$ % ^ & *";
                             }
                           },
                         ),
