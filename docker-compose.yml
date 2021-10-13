@@ -1,0 +1,10 @@
+version: '3.8'
+
+services:
+  frontend:
+    image: notheart/iig-frontend
+    container_name: react-frontend
+    build: .
+    volumes:
+      - '.:/app'
+      - '/app/node_modules'

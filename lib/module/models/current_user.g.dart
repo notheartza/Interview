@@ -9,7 +9,7 @@ part of 'current_user.dart';
 CurrentUser _$CurrentUserFromJson(Map<String, dynamic> json) {
   return $checkedNew('CurrentUser', json, () {
     final val = CurrentUser(
-      $checkedConvert(json, '_id', (v) => v as String),
+      $checkedConvert(json, '_id', (v) => v as String?),
       $checkedConvert(json, 'username', (v) => v as String?),
       $checkedConvert(json, 'firstName', (v) => v as String?),
       $checkedConvert(json, 'lastName', (v) => v as String?),

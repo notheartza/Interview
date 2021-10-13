@@ -21,7 +21,7 @@ class CurrentUser {
   );
 
   @JsonKey(name: '_id')
-  String id;
+  String? id;
   String? username;
   String? firstName;
   String? lastName;

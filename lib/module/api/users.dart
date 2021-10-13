@@ -8,8 +8,9 @@ import 'package:iig_interview/module/models/status_api_map.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class UserStore {
-  Future<StatusAPIMap> signup(CurrentUser user);
+  Future<StatusAPIMap> signup(CurrentUser user, String password);
   Future<StatusAPIMap> login(username, password);
+  Future<StatusAPI> resetpassword(oldpass, newpass);
   Future<StatusAPIMap> getuser();
   Future<StatusAPI> refreshToken();
   Future<StatusAPIMap> updateUser(CurrentUser user);
@@ -65,16 +66,27 @@ class User implements UserStore {
   }
 
   @override
-  Future<StatusAPIMap> signup(CurrentUser user) {
-    // TODO: implement signup
-    throw UnimplementedError();
+  Future<StatusAPIMap> signup(CurrentUser user, String password) async {
+    http.Response response = await http.post(Uri.parse('$url/users/signup'),
+        headers: {
+          HttpHeaders.contentTypeHeader: 'application/json',
+          HttpHeaders.acceptHeader: 'application/json',
+        },
+        body: jsonEncode({
+          "username": user.username,
+          "password": password,
+          "firstName": user.firstName,
+          "lastName": user.lastName,
+          "image": user.image,
+          "email": user.email
+        }));
+    return StatusAPIMap.fromJson(jsonDecode(response.body));
   }
 
   @override
   Future<StatusAPIMap> updateUser(CurrentUser user) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var token = prefs.getString("token");
-    //print(get);
     http.Response response = await http.post(
         Uri.parse('$url/users/update/user'),
         headers: {
@@ -82,8 +94,8 @@ class User implements UserStore {
           'authorization': 'Bearer $token'
         },
         body: jsonEncode({
-          "firstname": user.firstName,
-          "lastname": user.lastName,
+          "firstName": user.firstName,
+          "lastName": user.lastName,
           "image": user.image,
           "email": user.email
         }));
@@ -103,5 +115,27 @@ class User implements UserStore {
       },
     );
     return StatusAPIMap.fromJson(jsonDecode(response.body));
+  }
+
+  @override
+  Future<StatusAPI> resetpassword(oldpass, newpass) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var token = prefs.getString("token");
+    http.Response response =
+        await http.post(Uri.parse('$url/users/resetpassword'),
+            headers: {
+              HttpHeaders.contentTypeHeader: 'application/json',
+              HttpHeaders.acceptHeader: 'application/json',
+              HttpHeaders.authorizationHeader: 'Bearer $token'
+            },
+            body: jsonEncode({
+              "oldPassword": oldpass,
+              "newPassword": newpass,
+            }));
+    var get = jsonDecode(response.body);
+    if (get["message"].runtimeType == Map) {
+      get["message"] = jsonEncode(get["message"]);
+    }
+    return StatusAPI.fromJson(get);
   }
 }

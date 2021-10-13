@@ -57,12 +57,17 @@ class _HomePageState extends State<HomePage> {
                           onTap: () async {
                             var userData = await userapi.logout();
                             if (userData.status == 200) {
-                              await userProvider.logoutUser();
+                              setState(() {
+                                userProvider.logoutUser();
+                              });
                               context.vRouter.to("/login");
                             } else if (userData.status > 400) {
                               userData = await userapi.refreshToken();
                               if (userData.status == 200) {
-                                await userProvider.logoutUser();
+                                setState(() {
+                                  userProvider.logoutUser();
+                                });
+
                                 context.vRouter.to("/login");
                               }
                             }

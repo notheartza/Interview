@@ -148,7 +148,6 @@ class _LoginPageState extends State<LoginPage> {
                                         userData.message['currentUser']);
                                     var token = userData.message['token'];
                                     await provider.setUser(user, token);
-                                    //print(provider.getToken());
                                     context.vRouter.toNamed('home');
                                   }
                                 }
